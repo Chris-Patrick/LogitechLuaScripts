@@ -1,0 +1,74 @@
+
+local c_tbl =
+{
+    [0] = 'SMG',
+    [1] = 'AR',
+    [2] = 'TWITCH',
+    [3] = 'MPX',
+    [4] = 'CAV/UMP',
+    [5] = 'VIGIL',
+    [6] = 'GENERAL'
+}
+              
+local r_tbl =
+{
+    ['SMG'] = {0, 5},
+    ['AR'] = {0, 9},
+    ['TWITCH'] = {0, 16},
+    ['MPX'] = {0, 4},
+    ['CAV/UMP'] = {0, 3},
+    ['VIGIL'] = {0, 5},
+    ['GENERAL'] = {0, 2}
+}
+
+local d_tbl =
+{
+    [0] = 'OFF',
+    [1] = 'ON'
+}
+ 
+-----------------------------------------------------------------
+-----------------------------SETTINGS----------------------------
+local MACRO_TOGGLE_KEY = 9
+local SWITCH_GUN_KEY = 8
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+----------------------------EVENT_PART---------------------------
+gun = 0
+kickback = falseB
+function OnEvent(event, arg)
+--ASSAULTRIFLE
+	if (event == "MOUSE_BUTTON_PRESSED" and arg == MACRO_TOGGLE_KEY) then
+		kickback = not kickback
+		if (kickback == false) then
+			OutputLogMessage("MACRO-OFF\n")
+		else
+			OutputLogMessage("MACRO-ON\n")
+			local strgun = c_tbl[gun]
+                      OutputLogMessage("CURRENT GUN: " .. gun .. " | " .. strgun .. "\n")
+			EnablePrimaryMouseButtonEvents(true)
+		end
+	
+	elseif (event == "MOUSE_BUTTON_PRESSED" and arg == SWITCH_GUN_KEY) then
+              if (gun >= 6) then
+                gun = 0
+              else
+                gun = gun + 1
+			
+              end
+ 
+              local strgun = c_tbl[gun]
+              OutputLogMessage("CURRENT GUN: " .. gun .. " | " .. strgun .. "\n")
+
+	elseif IsMouseButtonPressed(3) then
+		repeat	
+			if IsMouseButtonPressed(1) and kickback == true then
+				local strgun = c_tbl[gun]
+				repeat
+					MoveMouseRelative(r_tbl[strgun][1],r_tbl[strgun][2])
+					Sleep(4)
+				until not IsMouseButtonPressed(1)
+			end			
+		until not IsMouseButtonPressed(3)
+	end
+end
